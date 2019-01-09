@@ -39,25 +39,25 @@ React Native port of Nets Netaxept SDK
 
 ## Usage
 ```javascript
-import RNNetaxeptSDK, {
-  RNNetaxeptConfig,
-  RNNetaxeptPaymentMethods,
-  RNNetaxeptCardPayment,
-  RNNetaxeptCardToken,
-  RNNetaxeptThemeParams,
+import NetaxeptSDK, {
+  NetaxeptConfig,
+  NetaxeptPaymentMethods,
+  NetaxeptCardPayment,
+  NetaxeptCardToken,
+  NetaxeptThemeParams,
 } from 'react-native-netaxept';
 ```
 ## API
 
-| Method                                            | Return Type                         |
-| ------------------------------------------------- | ----------------------------------- |
-| [init(...)](#init)                                | `Promise<void>`                     |
-| [setMerchantId(...)](#setMerchantId)              | `Promise<void>`                     |
-| [setCurrencyCode(...)](#setCurrencyCode)          | `Promise<void>`                     |
-| [getPaymentMethods(...)](#getPaymentMethods)      | `Promise<RNNetaxeptPaymentMethods>` |
-| [addCard(...)](#addCard)                          | `Promise<void>`                     |
-| [checkout(...)](#checkout)                        | `Promise<void>`                     |
-| [customizeTheme(...)](#customizeTheme)            | `Promise<void>`                     |
+| Method                                            | Return Type                       |
+| ------------------------------------------------- | --------------------------------- |
+| [init(...)](#init)                                | `Promise<void>`                   |
+| [setMerchantId(...)](#setMerchantId)              | `Promise<void>`                   |
+| [setCurrencyCode(...)](#setCurrencyCode)          | `Promise<void>`                   |
+| [getPaymentMethods(...)](#getPaymentMethods)      | `Promise<NetaxeptPaymentMethods>` |
+| [addCard(...)](#addCard)                          | `Promise<void>`                   |
+| [checkout(...)](#checkout)                        | `Promise<void>`                   |
+| [customizeTheme(...)](#customizeTheme)            | `Promise<void>`                   |
 ---
 
 ## init
@@ -67,14 +67,14 @@ Initialize the PIA SDK. `merchantId` is not mandatory on initialization. You can
 **Example**
 
 ```javascript
-const config: RNNetaxeptConfig = {merchantBackendBaseURL: 'https://merchant.url/api'};
+const config: NetaxeptConfig = {merchantBackendBaseURL: 'https://merchant.url/api'};
 
 // You can await .init promise to resolve if
 // you want to make sure the values are set before moving on to the next line
-await RNNetaxeptSDK.init(config);
+await NetaxeptSDK.init(config);
 ```
 
-##### RNNetaxeptConfig
+##### NetaxeptConfig
 
 | Key                      | Value      | Default |
 | ------------------------ | ---------- | ------- |
@@ -94,7 +94,7 @@ Sets the merchant ID. A merchant ID is required to create a charge. In most case
 ```javascript
 // You can await .setMerchantId promise to resolve if
 // you want to make sure the values are set before moving on to the next line
-await RNNetaxeptSDK.setMerchantId('MERCHANT ID');
+await NetaxeptSDK.setMerchantId('MERCHANT ID');
 ```
 ---
 
@@ -107,7 +107,7 @@ Sets the currency code. In most cases, you'll never need this function as you'll
 ```javascript
 // You can await .setCurrencyCode promise to resolve if
 // you want to make sure the values are set before moving on to the next line
-await RNNetaxeptSDK.setCurrencyCode('SEK');
+await NetaxeptSDK.setCurrencyCode('SEK');
 ```
 ---
 ## getPaymentMethods
@@ -116,17 +116,17 @@ Get payment methods available for the consumer.
 
 ```javascript
 const consumerId: string = 'consumer_id';
-const paymentMethods: RNNetaxeptPaymentMethods = await RNNetaxeptSDK.getPaymentMethods(consumerId);
+const paymentMethods: NetaxeptPaymentMethods = await NetaxeptSDK.getPaymentMethods(consumerId);
 ```
 
-##### RNNetaxeptPaymentMethods
+##### NetaxeptPaymentMethods
 
 | Key       | Value Type                     |
 | --------- | ------------------------------ |
-| methods   | `Array<RNNetaxeptCardPayment>` |
-| tokens    | `Array<RNNetaxeptCardToken>`   |
+| methods   | `Array<NetaxeptCardPayment>` |
+| tokens    | `Array<NetaxeptCardToken>`   |
 
-##### RNNetaxeptCardPayment
+##### NetaxeptCardPayment
 
 | Key         | Value Type |
 | ----------- | ---------- |
@@ -136,7 +136,7 @@ const paymentMethods: RNNetaxeptPaymentMethods = await RNNetaxeptSDK.getPaymentM
 | imageUri    | `string`   |
 | type        | `string`   |
 
-##### RNNetaxeptCardToken
+##### NetaxeptCardToken
 
 | Key         | Value Type |
 | ----------- | ---------- |
@@ -156,7 +156,7 @@ Opens the PIA terminal to add and save a card to the consumer. These saved cards
 ```javascript
 try {
   const consumerId: string = 'consumer_id';
-  await RNNetaxeptSDK.addCard(consumerId);
+  await NetaxeptSDK.addCard(consumerId);
   console.log('Success'); // If execution comes to this line, it means card is succesfully saved
 } catch (err) {
   console.warn('Whoops, something went wrong', err); // Couldn't save the card.
@@ -174,11 +174,11 @@ Initiate the PIA payment flow. This will open the PIA payment modal and take ove
 ```javascript
 try {
   const consumerId: string = 'consumer_id';
-  const paymentMethods: RNNetaxeptPaymentMethods = await RNNetaxeptSDK.getPaymentMethods(consumerId);
+  const paymentMethods: NetaxeptPaymentMethods = await NetaxeptSDK.getPaymentMethods(consumerId);
   // You can select either a pre-saved card token, or a different payment method as the actual `paymentMethod`
-  const paymentMethod: RNNetaxeptCardPayment | RNNetaxeptCardToken = paymentMethods.tokens[0] || paymentMethods.methods[0];
+  const paymentMethod: NetaxeptCardPayment | NetaxeptCardToken = paymentMethods.tokens[0] || paymentMethods.methods[0];
 
-  const orderNumber: string = 'RNNetaxeptSDK-ORDER001';
+  const orderNumber: string = 'NetaxeptSDK-ORDER001';
   const amount: number = 100.00;
   const vatAmount: number = 3.0;
   
@@ -186,7 +186,7 @@ try {
   // We need it back in the checkout function to work properly
   const paymentType: string = paymentMethod.type;
 
-  await RNNetaxeptSDK.checkout(consumerId, orderNumber, amount, vatAmount, paymentType, paymentMethod);
+  await NetaxeptSDK.checkout(consumerId, orderNumber, amount, vatAmount, paymentType, paymentMethod);
   console.log('Success'); // If execution comes to this line, it means checkout is successful
 } catch (err) {
   console.warn('Whoops, something went wrong', err); // Couldn't complete the payment
@@ -200,7 +200,7 @@ try {
 Customize the theme of PIA terminal.
 
 ```javascript
-const theme: RNNetaxeptThemeParams = {
+const theme: NetaxeptThemeParams = {
   systemFont: 'Montserrat-Bold',
   
   // Be careful when setting bar color
@@ -211,10 +211,10 @@ const theme: RNNetaxeptThemeParams = {
 
 // You can await .customizeTheme promise to resolve if
 // you want to make sure the values are set before moving on to the next line
-await RNNetaxeptSDK.customizeTheme(theme);
+await NetaxeptSDK.customizeTheme(theme);
 ```
 
-##### RNNetaxeptThemeParams
+##### NetaxeptThemeParams
 
 All keys are optional. Only specify the elements you want to change.
 
